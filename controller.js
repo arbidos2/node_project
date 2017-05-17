@@ -1,6 +1,8 @@
 var app = angular.module('myApp', []);
 
-app.controller('myCtrl', function($scope) {
+app.controller('myCtrl', function($scope, $http) {
+
+    $http.get('/contactlist');
 
 	console.log("Hello world from controller");
 
