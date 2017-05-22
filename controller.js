@@ -1,39 +1,49 @@
 var app = angular.module('myApp', []);
 
-app.controller('myCtrl', function($scope) {
-
-	console.log("Hello world from controller");
-
-    person1 = {
-    	name: "Tim",
-    	email: "tim@email.com",
-    	number: "(111) 111 - 1111"
+app.controller('myCtrl', function ($scope, $http) {
+	// console.log("Hello world from controller");
+    var refresh = function () {
+        $http.get('/contactlist')
+        .then(function (response) {
+            // console.log("I got the data I requested");
+            $scope.contactlist = response.data;
+        });
     };
 
-    person2 = {
-    	name: "Emily",
-    	email: "emily@email.com",
-    	number: "(222) 222 - 2222"
+    refresh();
+
+    $scope.addContact = function () {
+        // console.log($scope.contact);
+        $http.post('/contactlist', $scope.contact)
+        .then(function (response) {
+            // console.log(response.data);
+            refresh();
+        });
     };
 
-    person3 = {
-    	name: "John",
-    	email: "john@email.com",
-    	number: "(333) 333 - 3333"
+    $scope.remove = function (id) {
+        // console.log(id);
+        $http.delete('/contactlist/' + id)
+        .then(function (response) {
+            // console.log(response);
+            refresh();
+        });
     };
 
-    var contactlist = [person1, person2, person3];
-	$scope.contactlist = contactlist;
+    $scope.edit = function (id) {
+        // console.log(id);
+        $http.get('/contactlist/' + id)
+        .then(function (response) {
+            $scope.contact = response.data;
+        });
+    };
 
-	// $http.get('/contactlist').success(function(response) {
-	// 	console.log("I got the data I requested");
-
-
-	// $http.get("welcome.htm")
-	// 	.then(function(response) {
-	// 		$scope.myWelcome = response.data;
-	// 	});
-
-	// });
+    $scope.update = function() {
+        // console.log($scope.contact._id)
+        $http.put('/contactlist/' + $scope.contact._id, $scope.contact)
+        .then(function (response) {
+            refresh();
+        });
+    }
 
 });
